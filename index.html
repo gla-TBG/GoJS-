@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>GoJS实例</title>
+    <style>
+        #myDiagramDiv {
+            width: 1200px;
+            height: 500px;
+            background-color: #DAE4E4;
+        }
+    </style>
+    <script src="https://unpkg.com/gojs/release/go-debug.js"></script>
+</head>
+
+<body onload="init()">
+    <div id="myDiagramDiv"></div>
+    生成的图片：
+    <div id="img-box"></div>
+    <script>
+        function init() {
+            const $ = go.GraphObject.make; // for conciseness in defining templates
+
+            myDiagram = $(
+                go.Diagram,
+                'myDiagramDiv', // create a Diagram for the DIV HTML element
+                {
+                    initialContentAlignment: go.Spot.Center, // 画布的位置设置（居中，靠左等）
+                    // initialPosition: new go.Point(0, 0),
+                    "animationManager.isEnabled": true,
+                }
+            );
+
+            myDiagram.nodeTemplate = $(
+                go.Node,
+                // {minSize:new go.Size(NaN,45)},
+                'Vertical', // the Shape will go around the TextBlock
+
+                new go.Binding("location", "loc", go.Point.parse),
+
+                $(
+                    go.Panel,
+                    'Auto',
+                    // {minSize:new go.Size(20,20)},
+                    $(
+                        go.Shape,
+                        'Circle',
+                        {strokeWidth: 1, fill: 'white', stroke: 'white'},
+                        new go.Binding('fill', 'color')
+                    ),
+                    $(
+                        go.TextBlock,
+                        {
+                            font: 'normal 10px sans-serif',
+                            stroke: 'white'
+                        },
+                        new go.Binding('text', 'key')
+                    )
+                ),
+                $(
+                    go.TextBlock,
+                    {
+                        visible: false,
+                        // height:32,
+                        stroke: 'black'
+                    },
+                    new go.Binding('text', 'distance'),
+                    new go.Binding('visible', 'distance', function (t) {
+                        return !!t;
+                    })
+                )
+            );
+
+            myDiagram.linkTemplate = $(
+                go.Link,
+                {curve: go.Link.AvoidsNodes},
+                {
+                    routing: go.Link.Normal
+                },
+
+                //线
+                $(
+                    go.Shape,
+                    {strokeWidth: 1, stroke: '#2EC7C9'},
+                    new go.Binding('strokeWidth', 'thick')
+                ),
+                //箭头
+                $(
+                    go.Shape,
+                    {toArrow: 'OpenTriangle', visible: false, stroke: '#2EC7C9', fill: '#2EC7C9'}, // OpenTriangle or Triangle
+                    new go.Binding('visible', 'toArrow', function (t) {
+                        return !!t;
+                    })
+                ),
+
+                // 线上面的文字
+                $(
+                    go.TextBlock,
+                    new go.Binding('text', 'amount', function (t) {
+                        return t;
+                    }),
+                    new go.Binding('stroke', 'color'),
+                    {
+                        segmentIndex: -1, segmentOffset: new go.Point(-20, 10),
+                        segmentOrientation: go.Link.OrientUpright
+                    }
+                ),
+                //线里面的内容
+                $(
+                    go.Panel,
+                    'Auto',
+                    $(
+                        go.TextBlock,
+                        {visible: false, background: 'white'}, // default to not visible, in case there's no data.body property
+                        new go.Binding('text', 'text'),
+                        new go.Binding('visible', 'text', function (t) {
+                            return !!t;
+                        })
+                    )
+                )
+            )
+
+            myDiagram.model = new go.GraphLinksModel(
+                [
+
+                    {
+                        key: '2',
+                        color: '#71B603',
+                        loc: '0 14'
+                    },
+                    {
+                        key: '3',
+                        color: 'orange',
+                        loc: '129 14'
+                    },
+                    {
+                        key: '4',
+                        color: '#71B603',
+                        loc: '229 14'
+                    },
+                    {
+                        key: '5',
+                        color: '#71B603',
+                        loc: '329 14'
+                    },
+                    {
+                        key: '6',
+                        color: '#71B603',
+                        loc: '429 14'
+                    },
+                    {
+                        key: '7',
+                        color: '#71B603',
+                        loc: '429 64'
+                    },
+                    {
+                        key: '8',
+                        color: '#71B603',
+                        loc: '429 140'
+                    },
+                    {
+                        key: '9',
+                        color: 'red',
+                        loc: '329 140'
+                    }
+                ],
+                [
+                    {
+                        from: '2',
+                        to: '3',
+                        text: '2222',
+                        amount: '10',
+                        toArrow: true
+                    },
+                    {
+                        from: '3',
+                        to: '4',
+                        toArrow: true
+                    },
+                    {
+                        from: '4',
+                        to: '5',
+                        toArrow: true
+                    },
+
+                    {
+                        from: '5',
+                        to: '6',
+                        toArrow: true
+                    },
+                    {
+                        from: '6',
+                        to: '7',
+                        toArrow: true
+                    },
+                    {
+                        from: '7',
+                        to: '8',
+                        thick: 1,
+                        toArrow: true
+                    },
+                    {
+                        from: '8',
+                        to: '5',
+                        toArrow: true
+                    },
+                    {
+                        from: '5',
+                        to: '9',
+                        toArrow: true
+                    },
+                    {
+                        from: '9',
+                        to: '6',
+                        toArrow: true
+                    },
+                    {
+                        from: '4',
+                        to: '3',
+                        toArrow: true
+                    }
+                ]
+            );
+            document.querySelector('#img-box').appendChild(
+                myDiagram.makeImage({
+                    scale: 1
+                })
+            )
+
+        }
+    </script>
+</body>

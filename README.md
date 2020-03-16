@@ -182,6 +182,7 @@ myDiagram.makeImageData({
 })
 ```
 
+
 GoJS去水印
 
 在go.js文件中搜索关键字：7eba17a4ca3b1a8346，会找到类似

@@ -192,4 +192,4 @@ a.Kv=d[w.Kg(“7eba17a4ca3b1a8346”)]w.Kg(“78a118b7”);
 把a.Kv=d[w.Kg(“7eba17a4ca3b1a8346”)]w.Kg(“78a118b7”);替换为a.Kv =function(){return true;};就可以了.
 去水印后
 
-demo预览: https://gla-tbg.github.io/GoJS-
+demo预览: https://gla-tbg.github.io/GoJS-/
